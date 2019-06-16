@@ -22,15 +22,11 @@ portList = json_data['portlist']
 @apirouter.route('/startXbee',methods=['POST'])
 def startXbee():
   message = 'Nothing appened'
-  try:
-    print(request)
-    params = request.get_json(force=True)
-    print(params)
-    xbeeController.openSerial(params['selectedPort'])
-    message = 'Serial reading started'
-  except Exception as e:
-    print('Error: ', e)
-    message = 'An error has occurred'
+  print(request)
+  params = request.get_json(force=True)
+  print(params)
+  xbeeController.openSerial(params['selectedPort'])
+  message = 'Serial reading started'
   return jsonify({"message": message})
 
 @apirouter.route('/startFakeAcq',methods=['GET'])
