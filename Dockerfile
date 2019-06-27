@@ -1,5 +1,5 @@
 ARG node=node:10.15.3-stretch
-ARG python=python:3.6-slim-stretch
+ARG python=python:3.7-alpine
 
 # Build frontend/client
 FROM $node as client
@@ -18,13 +18,14 @@ RUN npm run build
 
 # Put them together
 FROM $python
-# RUN pip3 install pipenv
-RUN pip install -U pip
-RUN pip install pipenv
+RUN pip3 install pipenv
+#RUN pip install -U pip
+#RUN pip install pipenv
 WORKDIR /usr/src/app/Backend
 COPY ./Backend/Pipfile .
-COPY ./Backend/Pipfile.lock .
-RUN pipenv install --deploy --ignore-pipfile
+# COPY ./Backend/Pipfile.lock .
+# RUN pipenv install --deploy --ignore-pipfile
+RUN pipenv install
 EXPOSE 5000
 COPY ./Backend .
 COPY --from=client /usr/src/app/Client/dist/ /usr/src/app/Client/dist/

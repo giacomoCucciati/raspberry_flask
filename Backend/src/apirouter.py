@@ -56,7 +56,7 @@ def addPoints():
   params = request.get_json(force=True)
   print(params)
   pointList.append({'temperature': params['temperature'],'light': params['light'],'timestamp': params['timestamp']})
-  if len(pointList) > 1000:
+  if len(pointList) > 5000:
     pointList.pop(0)
   
   socketio.emit('updateSinglePoint')

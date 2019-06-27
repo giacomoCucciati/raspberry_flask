@@ -1,4 +1,4 @@
-import serial
+from serial import Serial
 import sys
 import threading
 import time
@@ -12,7 +12,7 @@ class XbeeController:
     self.theThread = None
 
   def openSerial(self, port):
-    self.ser = serial.Serial(port, 9600, timeout=10)
+    self.ser = Serial(port, 9600, timeout=None)
     self.ser.flushInput()
     self.theThread = threading.Thread(target=self.thread_function, args=())
     self.runningFlag = True
@@ -45,8 +45,8 @@ class XbeeController:
         time.sleep(0.01)
 
   def interpretMessage(self, bytesArray):
-    if len(bytesArray) != 16:
-        print("Wrong message length: ", len(bytesArray))
+    if len(bytesArray) != 18:
+        print("Wrong message length: ", str(len(bytesArray)))
         return
     elif bytesArray[0] != 0x7E:
         print("Wrong message start", bytesArray[0])
@@ -63,12 +63,13 @@ class XbeeController:
         ( bytesArray[11] << 8 ) | bytesArray[12]
         temperature = ( bytesArray[11] << 8 ) | bytesArray[12]
         light = ( bytesArray[13] << 8 ) | bytesArray[14]
+        humidity = ( bytesArray[15] << 8 ) | bytesArray[16]
         # print("First channel: ", temperature)
         # print("Second channel: ", light)
         # print("Checksum: ",bytesArray[-1])
-        r = requests.post('http://localhost:5000/api/addPoint', json = {'temperature':temperature, 'light':light, "timestamp": int(round(time.time() * 1000))})
+        r = requests.post('http://localhost:5000/api/addPoint', json = {'temperature':temperature, 'light':light, 'humidity':humidity, "timestamp": int(round(time.time() * 1000))})
 
   def thread_fake_function(self):
     while self.runningFlag:
-      r = requests.post('http://localhost:5000/api/addPoint', json = {'temperature':500, 'light':100, "timestamp": int(round(time.time() * 1000))})
+      r = requests.post('http://localhost:5000/api/addPoint', json = {'temperature':500, 'light':100, 'humidity':0, "timestamp": int(round(time.time() * 1000))})
       time.sleep(5)

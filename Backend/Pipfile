@@ -8,9 +8,8 @@ verify_ssl = true
 [packages]
 flask = "*"
 flask-socketio = "*"
-serial = "*"
 requests = "*"
-pyserial = "*"
+pySerial = "*"
 
 [requires]
-python_version = "3.6"
+python_version = "3.7"

@@ -45,6 +45,9 @@ jspm_packages/
 # Build
 dist/
 
+# Python build
+*.pyc
+
 # TypeScript v1 declaration files
 typings/
 
