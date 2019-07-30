@@ -1,5 +1,6 @@
 {
   "portlist":[
+    "/dev/ttyACM0",
     "/dev/ttyUSB0",
     "/dev/ttyUSB1",
     "/dev/ttyUSB2",
