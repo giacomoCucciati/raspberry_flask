@@ -3,13 +3,15 @@ from flask_socketio import emit, join_room, leave_room
 from flask import request
 from . import socketio
 from .xbeeController import XbeeController
+from .arduinoController import ArduinoController
 import time
 import logging
 import os
 import json
 
 apirouter = Blueprint("router", __name__)
-xbeeController = XbeeController()
+# xbeeController = XbeeController()
+xbeeController = ArduinoController()
 pointList = []
 portList = []
 
@@ -55,7 +57,7 @@ def addPoints():
   print("Server contacted")
   params = request.get_json(force=True)
   print(params)
-  pointList.append({'temperature': params['temperature'],'light': params['light'],'timestamp': params['timestamp']})
+  pointList.append(params)
   if len(pointList) > 5000:
     pointList.pop(0)
   

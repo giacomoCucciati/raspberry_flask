@@ -3,6 +3,7 @@ import sys
 import threading
 import time
 import requests
+from random import randrange
 
 class XbeeController:
   def __init__(self):
@@ -67,9 +68,16 @@ class XbeeController:
         # print("First channel: ", temperature)
         # print("Second channel: ", light)
         # print("Checksum: ",bytesArray[-1])
-        r = requests.post('http://localhost:5000/api/addPoint', json = {'temperature':temperature, 'light':light, 'humidity':humidity, "timestamp": int(round(time.time() * 1000))})
+
+        # We convert temperature ADC counts in degrees
+        mVTemperature = temperature * (3300/1024)
+        celsiusDeg = (mVTemperature - 500) / 10
+        print(celsiusDeg)
+        r = requests.post('http://localhost:5000/api/addPoint', json = {'temperature':celsiusDeg, 'light':light, 'humidity':humidity, "timestamp": int(round(time.time() * 1000))})
 
   def thread_fake_function(self):
     while self.runningFlag:
-      r = requests.post('http://localhost:5000/api/addPoint', json = {'temperature':500, 'light':100, 'humidity':0, "timestamp": int(round(time.time() * 1000))})
-      time.sleep(5)
+      temperature = randrange(10)+10
+      light = randrange(40)+30
+      r = requests.post('http://localhost:5000/api/addPoint', json = {'temperature':temperature, 'light':light, 'humidity':0, "timestamp": int(round(time.time() * 1000))})
+      time.sleep(1)

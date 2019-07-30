@@ -9,6 +9,9 @@ import VueAxios from 'vue-axios'
 import axios from 'axios'
 import Highcharts from 'highcharts'
 import VueHighcharts from 'highcharts-vue'
+import loadStock from 'highcharts/modules/stock.js'
+
+loadStock(Highcharts)
 
 Vue.use(VueAxios, axios)
 Vue.use(Buefy)

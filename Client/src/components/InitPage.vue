@@ -32,6 +32,8 @@ export default {
       port_list: [],
       light_points: [],
       temperature_points: [],
+      temperatureDTH_points: [],
+      humidityDTH_points: [],
       selectedPort: '',
       chartOptions: {
         series: []
@@ -65,8 +67,10 @@ export default {
         this.selectedPort = response.data.selectedPort
 
         response.data.pointList.forEach(point => {
-          this.light_points.push([point.timestamp, point.light])
-          this.temperature_points.push([point.timestamp, point.temperature])
+          this.light_points.push([point.timestamp, point.lum])
+          this.temperature_points.push([point.timestamp, point.temp])
+          this.temperatureDTH_points.push([point.timestamp, point.tempDTH])
+          this.humidityDTH_points.push([point.timestamp, point.humDTH])
         })
       })
     },
@@ -92,9 +96,9 @@ export default {
       this.chartOptions['yAxis'] = {
         title: {
           text: 'FED nb'
-        },
-        min: 0,
-        max: 1024
+        }
+        // min: 0,
+        // max: 1024
       }
       this.chartOptions['plotOptions'] = {
         series: {
@@ -117,22 +121,44 @@ export default {
           symbol: 'cyrcle'
         }
       })
+      this.chartOptions['series'].push({
+        name: 'TempDTH',
+        color: 'rgba(255, 0, 0, 0.7)',
+        data: this.temperatureDTH_points,
+        marker: {
+          symbol: 'cyrcle'
+        }
+      })
+      this.chartOptions['series'].push({
+        name: 'HumDTH',
+        color: 'rgba(125, 125, 125, 0.7)',
+        data: this.humidityDTH_points,
+        marker: {
+          symbol: 'cyrcle'
+        }
+      })
     },
 
     askOnePoint () {
       // console.log('Request from server to get the last point.')
       axios.get('/api/getSinglePoint').then(r => {
         // console.log(r)
-        this.light_points.push([r.data.singlePoint.timestamp, r.data.singlePoint.light])
-        this.temperature_points.push([r.data.singlePoint.timestamp, r.data.singlePoint.temperature])
+        this.light_points.push([r.data.singlePoint.timestamp, r.data.singlePoint.lum])
+        this.temperature_points.push([r.data.singlePoint.timestamp, r.data.singlePoint.temp])
+        this.temperatureDTH_points.push([r.data.singlePoint.timestamp, r.data.singlePoint.tempDTH])
+        this.humidityDTH_points.push([r.data.singlePoint.timestamp, r.data.singlePoint.humDTH])
         if (this.light_points.length > 1000) {
           this.light_points.shift()
         }
         if (this.temperature_points.length > 1000) {
           this.temperature_points.shift()
         }
-        // console.log(this.temperature_points)
-        // console.log(this.light_points)
+        if (this.temperatureDTH_points.length > 1000) {
+          this.temperatureDTH_points.shift()
+        }
+        if (this.humidityDTH_points.length > 1000) {
+          this.humidityDTH_points.shift()
+        }
       })
     }
   },
