@@ -57,7 +57,6 @@ class ArduinoController:
 
     jsonToSend = {}
 
-    # temp 32.47
     # lum 83
     # tempDTH 26.00
     # humDTH 56.00

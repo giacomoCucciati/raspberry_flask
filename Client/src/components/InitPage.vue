@@ -31,7 +31,7 @@ export default {
     return {
       port_list: [],
       light_points: [],
-      temperature_points: [],
+      pitemperature_points: [],
       temperatureDTH_points: [],
       humidityDTH_points: [],
       selectedPort: '',
@@ -68,7 +68,7 @@ export default {
 
         response.data.pointList.forEach(point => {
           this.light_points.push([point.timestamp, point.lum])
-          this.temperature_points.push([point.timestamp, point.temp])
+          this.pitemperature_points.push([point.timestamp, point.pitemp])
           this.temperatureDTH_points.push([point.timestamp, point.tempDTH])
           this.humidityDTH_points.push([point.timestamp, point.humDTH])
         })
@@ -81,7 +81,7 @@ export default {
         zoomType: 'x'
       }
       this.chartOptions['title'] = {
-        text: 'Calibration Sequence'
+        text: 'Measurements'
         // margin: -44
       }
       this.chartOptions['xAxis'] = {
@@ -95,7 +95,7 @@ export default {
       }
       this.chartOptions['yAxis'] = {
         title: {
-          text: 'FED nb'
+          text: 'Celsius or ADC counts'
         }
         // min: 0,
         // max: 1024
@@ -106,9 +106,9 @@ export default {
         }
       }
       this.chartOptions['series'].push({
-        name: 'Temperature',
-        color: 'rgba(3, 169, 244, 0.7)',
-        data: this.temperature_points,
+        name: 'PI Temp',
+        color: 'rgba(233, 233, 0, 0.7)',
+        data: this.pitemperature_points,
         marker: {
           symbol: 'cyrcle'
         }
@@ -144,14 +144,14 @@ export default {
       axios.get('/api/getSinglePoint').then(r => {
         // console.log(r)
         this.light_points.push([r.data.singlePoint.timestamp, r.data.singlePoint.lum])
-        this.temperature_points.push([r.data.singlePoint.timestamp, r.data.singlePoint.temp])
+        this.pitemperature_points.push([r.data.singlePoint.timestamp, r.data.singlePoint.pitemp])
         this.temperatureDTH_points.push([r.data.singlePoint.timestamp, r.data.singlePoint.tempDTH])
         this.humidityDTH_points.push([r.data.singlePoint.timestamp, r.data.singlePoint.humDTH])
         if (this.light_points.length > 1000) {
           this.light_points.shift()
         }
-        if (this.temperature_points.length > 1000) {
-          this.temperature_points.shift()
+        if (this.pitemperature_points.length > 1000) {
+          this.pitemperature_points.shift()
         }
         if (this.temperatureDTH_points.length > 1000) {
           this.temperatureDTH_points.shift()

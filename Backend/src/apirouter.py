@@ -57,10 +57,21 @@ def addPoints():
   print("Server contacted")
   params = request.get_json(force=True)
   print(params)
+  # Adding raspberry temp
+  try:
+    theFile = '/var/log/pitemp.txt'
+    exists = os.path.isfile(theFile)
+    if exists:
+      fileptr = open(theFile, 'r') 
+      answer = fileptr.read()  
+      fileptr.close()
+  except:
+    print('No valid command')
+  else:
+    params['pitemp']=float(answer[5:-3])
   pointList.append(params)
-  if len(pointList) > 5000:
+  if len(pointList) > 1000:
     pointList.pop(0)
-  
   socketio.emit('updateSinglePoint')
   return jsonify({"message":"points received"})
 

@@ -29,4 +29,4 @@ RUN pipenv install
 EXPOSE 5000
 COPY ./Backend .
 COPY --from=client /usr/src/app/Client/dist/ /usr/src/app/Client/dist/
-CMD ["pipenv", "run", "python", "app.py"]
+CMD ["pipenv", "run", "python", "-u", "app.py"]
