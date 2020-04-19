@@ -65,11 +65,11 @@ class ArduinoController:
       if len(couple) == 2:
         jsonToSend[couple[0]]=float(couple[1])
     jsonToSend["timestamp"]=int(round(time.time() * 1000))
-    r = requests.post('http://localhost:5000/api/addPoint', json = jsonToSend)
+    r = requests.post('http://localhost:4001/api/addPoint', json = jsonToSend)
       
   def thread_fake_function(self):
     while self.runningFlag:
       temperature = randrange(10)+10
       light = randrange(40)+30
-      r = requests.post('http://localhost:5000/api/addPoint', json = {'temperature':temperature, 'light':light, 'humidity':0, "timestamp": int(round(time.time() * 1000))})
+      r = requests.post('http://localhost:4001/api/addPoint', json = {'temperature':temperature, 'light':light, 'humidity':0, "timestamp": int(round(time.time() * 1000))})
       time.sleep(1)

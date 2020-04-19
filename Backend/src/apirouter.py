@@ -8,6 +8,12 @@ import time
 import logging
 import os
 import json
+import prometheus_client
+import random
+from flask import Response
+from influxdb import InfluxDBClient
+import datetime
+
 
 apirouter = Blueprint("router", __name__)
 # xbeeController = XbeeController()
@@ -16,10 +22,13 @@ pointList = []
 portList = []
 
 # I don't know where to put the creation of the port list
-configFile = open(os.path.join("static", "config.json"), "r")
+configFile = open(os.path.join("/home/pi/Documents/raspberry_flask/Backend/static", "config.json"), "r")
 json_data = json.load(configFile)
 print(json_data)
 portList = json_data['portlist']
+
+client = InfluxDBClient(host='localhost', port=8086)
+client.switch_database('sensorexample')
 
 @apirouter.route('/startXbee',methods=['POST'])
 def startXbee():
@@ -59,7 +68,7 @@ def addPoints():
   print(params)
   # Adding raspberry temp
   try:
-    theFile = '/var/log/pitemp.txt'
+    theFile = '/home/pi/Documents/scripts/pitemp.txt'
     exists = os.path.isfile(theFile)
     if exists:
       fileptr = open(theFile, 'r') 
@@ -72,6 +81,26 @@ def addPoints():
   pointList.append(params)
   if len(pointList) > 1000:
     pointList.pop(0)
+  #try:
+  print(params)
+
+  s = params['timestamp'] / 1000
+  stringtime = datetime.datetime.fromtimestamp(s).strftime('%Y-%m-%dT%H:%M:%SZ')
+  print(stringtime)
+  influxPoint = {}
+  influxPoint["measurement"] = "rasp_measurements"
+  influxPoint["tags"] = {"host":"raspberry3"}
+  influxPoint["time"] = stringtime
+  influxPoint["fields"] = {"pitemp": params['pitemp']}
+  influxPoint["fields"]["DTHtemp"] = params['tempDTH']
+  influxPoint["fields"]["DTHhum"] = params['humDTH']
+  influxPoint["fields"]["lum"] = params['lum']
+  influxPointList = []
+  influxPointList.append(influxPoint)
+  print(influxPoint)
+  client.write_points(influxPointList)
+  #except:
+  #print('Error writing on InfluxDB')
   socketio.emit('updateSinglePoint')
   return jsonify({"message":"points received"})
 
@@ -90,3 +119,4 @@ def getSinglePoint():
     "singlePoint": pointList[-1]
   }
   return jsonify(answer)
+
