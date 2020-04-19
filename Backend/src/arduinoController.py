@@ -31,22 +31,33 @@ class ArduinoController:
   def thread_function(self):
     messageByteArray = []
     while self.runningFlag:
-      if self.ser.in_waiting>0:
-        myByte = self.ser.read(1)
-        if myByte == b'\n':
-          self.interpretMessage(messageByteArray)
-          messageByteArray = []
+      # send request for data
+      self.ser.write('read'.encode('utf-8'))
+      # wait some time
+      time.sleep(1)
+      
+      startTime = time.time()
+      newTime = 0
+      while newTime - startTime < 5:
+
+        if self.ser.in_waiting>0:
+          myByte = self.ser.read(1)
+          if myByte == b'\n':
+            self.interpretMessage(messageByteArray)
+            messageByteArray = []
+          else:
+            messageByteArray.append(myByte[0])
+          #     # We have a new message. Before reading it, let's analyse what was in the previous one
+          #     if len(messageByteArray) != 0:
+          #         self.interpretMessage(messageByteArray)
+          #     messageByteArray = []
+          #     messageByteArray.append(myByte[0])
+          # else:
+          #     messageByteArray.append(myByte[0])
         else:
-          messageByteArray.append(myByte[0])
-        #     # We have a new message. Before reading it, let's analyse what was in the previous one
-        #     if len(messageByteArray) != 0:
-        #         self.interpretMessage(messageByteArray)
-        #     messageByteArray = []
-        #     messageByteArray.append(myByte[0])
-        # else:
-        #     messageByteArray.append(myByte[0])
-      else:
-        time.sleep(0.01)
+          time.sleep(0.01)
+        newTime = time.time()
+      time.sleep(10)
 
   def interpretMessage(self, bytesArray):
     mystring = ''
