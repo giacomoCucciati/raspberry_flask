@@ -37,7 +37,7 @@ class ArduinoController:
       time.sleep(1)
       
       startTime = time.time()
-      newTime = 0
+      newTime = time.time()
       while newTime - startTime < 5:
 
         if self.ser.in_waiting>0:
@@ -57,7 +57,7 @@ class ArduinoController:
         else:
           time.sleep(0.01)
         newTime = time.time()
-      time.sleep(10)
+      time.sleep(120)
 
   def interpretMessage(self, bytesArray):
     mystring = ''

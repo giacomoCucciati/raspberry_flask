@@ -98,7 +98,8 @@ def addPoints():
   influxPointList = []
   influxPointList.append(influxPoint)
   print(influxPoint)
-  client.write_points(influxPointList)
+  success = client.write_points(influxPointList)
+  print('Point written on influxdb:', success)
   #except:
   #print('Error writing on InfluxDB')
   socketio.emit('updateSinglePoint')
