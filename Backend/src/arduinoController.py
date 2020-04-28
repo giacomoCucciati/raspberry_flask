@@ -76,7 +76,10 @@ class ArduinoController:
       if len(couple) == 2:
         jsonToSend[couple[0]]=float(couple[1])
     jsonToSend["timestamp"]=int(round(time.time() * 1000))
-    r = requests.post('http://localhost:4001/api/addPoint', json = jsonToSend)
+    if 'extTemp' in jsonToSend:
+      requests.post('http://localhost:4001/api/addPoint2', json = jsonToSend)
+    else:
+      requests.post('http://localhost:4001/api/addPoint', json = jsonToSend)
       
   def thread_fake_function(self):
     while self.runningFlag:

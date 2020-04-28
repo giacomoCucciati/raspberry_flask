@@ -14,6 +14,18 @@
       <button v-on:click="startReadXbee">Start reading xbee</button>
       <button v-on:click="stopReadXbee">Stop reading xbee</button>
       <button v-on:click="fakeAcquisition">Fake points</button>
+      <b-field label="Port list 2">
+        <b-select placeholder="Select a port" v-model='selectedPort2'>
+          <option
+            v-for="port in port_list"
+            :value="port"
+            :key="port">
+            {{ port }}
+          </option>
+        </b-select>
+      </b-field>
+      <button v-on:click="startReadXbee2">Start reading xbee2</button>
+      <button v-on:click="stopReadXbee2">Stop reading xbee2</button>
       <div v-if="this.chartOptions !== undefined">
         <highcharts :options="chartOptions" ref="lineCharts"></highcharts>
       </div>
@@ -35,6 +47,7 @@ export default {
       temperatureDTH_points: [],
       humidityDTH_points: [],
       selectedPort: '',
+      selectedPort2: '',
       chartOptions: {
         series: []
       }
@@ -55,6 +68,19 @@ export default {
       })
     },
 
+    startReadXbee2: function () {
+      console.log('Selected port: ', this.selectedPort2)
+      axios.post('/api/startXbee2', {selectedPort: this.selectedPort2}).then(response => {
+        console.log(response)
+      })
+    },
+
+    stopReadXbee2: function () {
+      axios.get('/api/stopXbee2').then(response => {
+        console.log(response)
+      })
+    },
+
     fakeAcquisition: function () {
       axios.get('/api/startFakeAcq').then(response => {
         console.log(response)
@@ -65,6 +91,7 @@ export default {
       axios.get('/api/getPageUpdate').then(response => {
         this.port_list = response.data.portlist
         this.selectedPort = response.data.selectedPort
+        this.selectedPort2 = response.data.selectedPort2
 
         response.data.pointList.forEach(point => {
           this.light_points.push([point.timestamp, point.lum])

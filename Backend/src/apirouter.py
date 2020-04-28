@@ -18,6 +18,7 @@ import datetime
 apirouter = Blueprint("router", __name__)
 # xbeeController = XbeeController()
 xbeeController = ArduinoController()
+xbeeController2 = ArduinoController()
 pointList = []
 portList = []
 
@@ -121,3 +122,48 @@ def getSinglePoint():
   }
   return jsonify(answer)
 
+@apirouter.route('/startXbee2',methods=['POST'])
+def startXbee2():
+  message = 'Nothing appened'
+  print(request)
+  params = request.get_json(force=True)
+  print(params)
+  xbeeController2.openSerial(params['selectedPort'])
+  message = 'Serial reading started'
+  return jsonify({"message": message})
+
+@apirouter.route('/stopXbee2',methods=['GET'])
+def stopXbee2():
+  message = 'Nothing appened'
+  try:
+    xbeeController2.stopSerial()
+    message = 'Stop message sent'
+  except Exception as e:
+    print('Error: ', e)
+    message = 'An error has occurred'
+  return jsonify({"message": message})
+
+@apirouter.route('/addPoint2',methods=['POST'])
+def addPoints2():
+  print("Server contacted")
+  params = request.get_json(force=True)
+  print(params)
+  
+  s = params['timestamp'] / 1000
+  stringtime = datetime.datetime.fromtimestamp(s).strftime('%Y-%m-%dT%H:%M:%SZ')
+  print(stringtime)
+  influxPoint = {}
+  influxPoint["measurement"] = "external_measurements"
+  influxPoint["tags"] = {"host":"arduino_xbee"}
+  influxPoint["time"] = stringtime
+  influxPoint["fields"] = {"temp": params['temp']}
+  influxPoint["fields"]["lum"] = params['lum']
+  influxPointList = []
+  influxPointList.append(influxPoint)
+  print(influxPoint)
+  success = client.write_points(influxPointList)
+  print('Point written on influxdb:', success)
+  #except:
+  #print('Error writing on InfluxDB')
+  socketio.emit('updateSinglePoint')
+  return jsonify({"message":"points received"})
