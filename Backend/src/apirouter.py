@@ -122,8 +122,8 @@ def getSinglePoint():
   }
   return jsonify(answer)
 
-@apirouter.route('/startXbee2',methods=['POST'])
-def startXbee2():
+@apirouter.route('/startXbeeExt',methods=['POST'])
+def startXbeeExt():
   message = 'Nothing appened'
   print(request)
   params = request.get_json(force=True)
@@ -132,8 +132,8 @@ def startXbee2():
   message = 'Serial reading started'
   return jsonify({"message": message})
 
-@apirouter.route('/stopXbee2',methods=['GET'])
-def stopXbee2():
+@apirouter.route('/stopXbeeExt',methods=['GET'])
+def stopXbeeExt():
   message = 'Nothing appened'
   try:
     xbeeController2.stopSerial()
@@ -143,9 +143,9 @@ def stopXbee2():
     message = 'An error has occurred'
   return jsonify({"message": message})
 
-@apirouter.route('/addPoint2',methods=['POST'])
-def addPoints2():
-  print("Server contacted")
+@apirouter.route('/addPointExt',methods=['POST'])
+def addPointsExt():
+  print("Server contacted by ext")
   params = request.get_json(force=True)
   print(params)
   

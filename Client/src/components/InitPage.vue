@@ -47,7 +47,7 @@ export default {
       temperatureDTH_points: [],
       humidityDTH_points: [],
       selectedPort: '',
-      selectedPort2: '',
+      selectedPortExt: '',
       chartOptions: {
         series: []
       }
@@ -68,15 +68,15 @@ export default {
       })
     },
 
-    startReadXbee2: function () {
-      console.log('Selected port: ', this.selectedPort2)
-      axios.post('/api/startXbee2', {selectedPort: this.selectedPort2}).then(response => {
+    startReadXbeeExt: function () {
+      console.log('Selected port: ', this.selectedPortExt)
+      axios.post('/api/startXbeeExt', {selectedPort: this.selectedPortExt}).then(response => {
         console.log(response)
       })
     },
 
-    stopReadXbee2: function () {
-      axios.get('/api/stopXbee2').then(response => {
+    stopReadXbeeExt: function () {
+      axios.get('/api/stopXbeeExt').then(response => {
         console.log(response)
       })
     },
