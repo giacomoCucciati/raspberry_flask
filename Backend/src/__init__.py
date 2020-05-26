@@ -7,7 +7,7 @@ socketio = SocketIO()
 
 def create_app(debug=False):
     """Create an application."""
-    app = Flask(__name__,static_folder='../../Client/dist')
+    app = Flask(__name__,static_folder='/home/pi/Documents/raspberry_flask/Client/dist')
     app.debug = debug
     # secret key for sessions
     app.config['SECRET_KEY'] = 'pippo!'
@@ -23,6 +23,6 @@ def create_app(debug=False):
 
     @app.route('/static/<path:path>')
     def dist_static(path):
-        return send_from_directory("../../Client/dist/static", path)
+        return send_from_directory("/home/pi/Documents/raspberry_flask/Client/dist/static", path)
 
     return app

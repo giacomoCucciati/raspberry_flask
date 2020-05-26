@@ -32,17 +32,20 @@ class ArduinoController:
     messageByteArray = []
     while self.runningFlag:
       # send request for data
+      print("sending read command")
       self.ser.write('read'.encode('utf-8'))
       # wait some time
       time.sleep(1)
       
       startTime = time.time()
       newTime = time.time()
+ 
+      print(newTime - startTime)      
       while newTime - startTime < 5:
-
         if self.ser.in_waiting>0:
           myByte = self.ser.read(1)
           if myByte == b'\n':
+            print(messageByteArray)
             self.interpretMessage(messageByteArray)
             messageByteArray = []
           else:
@@ -57,13 +60,14 @@ class ArduinoController:
         else:
           time.sleep(0.01)
         newTime = time.time()
-      time.sleep(120)
+      time.sleep(20)
 
   def interpretMessage(self, bytesArray):
     mystring = ''
     for by in bytesArray:
       mystring += (chr(by))
     mystring = mystring[:-1]
+    print('Message to interpret', mystring)
     values = mystring.split(' ')
 
     jsonToSend = {}

@@ -109,7 +109,8 @@ def addPoints():
 @apirouter.route('/getPageUpdate',methods=['GET'])
 def getPageUpdate():
   answer = {
-    "selectedPort": xbeeController.port, 
+    "selectedPort": xbeeController.port,
+    "selectedPortExt": xbeeController2.port,
     "portlist": portList, 
     "pointList": pointList
   }
@@ -117,8 +118,11 @@ def getPageUpdate():
 
 @apirouter.route('/getSinglePoint',methods=['GET'])
 def getSinglePoint():
+  singlePoint = {}
+  if len(pointList) > 0:
+      singlePoint = pointList[-1]
   answer = {
-    "singlePoint": pointList[-1]
+    "singlePoint": singlePoint
   }
   return jsonify(answer)
 
@@ -156,7 +160,7 @@ def addPointsExt():
   influxPoint["measurement"] = "external_measurements"
   influxPoint["tags"] = {"host":"arduino_xbee"}
   influxPoint["time"] = stringtime
-  influxPoint["fields"] = {"temp": params['temp']}
+  influxPoint["fields"] = {"extTemp": params['extTemp']}
   influxPoint["fields"]["lum"] = params['lum']
   influxPointList = []
   influxPointList.append(influxPoint)

@@ -12,14 +12,14 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/api': {
-        target: "http://localhost:5000/",
+        target: "http://localhost:4001/",
         changeOrigin: true,
         pathRewrite: {
           '^/api': '/api'
         },
       },
       '/socket.io': {
-        target: "ws://localhost:5000",
+        target: "ws://localhost:4001",
         ws: true
       }
     },

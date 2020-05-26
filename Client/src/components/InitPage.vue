@@ -15,7 +15,7 @@
       <button v-on:click="stopReadXbee">Stop reading xbee</button>
       <button v-on:click="fakeAcquisition">Fake points</button>
       <b-field label="Port list 2">
-        <b-select placeholder="Select a port" v-model='selectedPort2'>
+        <b-select placeholder="Select a port" v-model='selectedPortExt'>
           <option
             v-for="port in port_list"
             :value="port"
@@ -24,8 +24,8 @@
           </option>
         </b-select>
       </b-field>
-      <button v-on:click="startReadXbee2">Start reading xbee2</button>
-      <button v-on:click="stopReadXbee2">Stop reading xbee2</button>
+      <button v-on:click="startReadXbeeExt">Start reading xbee2</button>
+      <button v-on:click="stopReadXbeeExt">Stop reading xbee2</button>
       <div v-if="this.chartOptions !== undefined">
         <highcharts :options="chartOptions" ref="lineCharts"></highcharts>
       </div>
@@ -91,13 +91,14 @@ export default {
       axios.get('/api/getPageUpdate').then(response => {
         this.port_list = response.data.portlist
         this.selectedPort = response.data.selectedPort
-        this.selectedPort2 = response.data.selectedPort2
-
+        this.selectedPortExt = response.data.selectedPortExt
+        console.log(this.port_list)
+        let localDateOffset = new Date().getTimezoneOffset() * 60 * 1000
         response.data.pointList.forEach(point => {
-          this.light_points.push([point.timestamp, point.lum])
-          this.pitemperature_points.push([point.timestamp, point.pitemp])
-          this.temperatureDTH_points.push([point.timestamp, point.tempDTH])
-          this.humidityDTH_points.push([point.timestamp, point.humDTH])
+          this.light_points.push([point.timestamp - localDateOffset, point.lum])
+          this.pitemperature_points.push([point.timestamp - localDateOffset, point.pitemp])
+          this.temperatureDTH_points.push([point.timestamp - localDateOffset, point.tempDTH])
+          this.humidityDTH_points.push([point.timestamp - localDateOffset, point.humDTH])
         })
       })
     },
@@ -170,10 +171,11 @@ export default {
       // console.log('Request from server to get the last point.')
       axios.get('/api/getSinglePoint').then(r => {
         // console.log(r)
-        this.light_points.push([r.data.singlePoint.timestamp, r.data.singlePoint.lum])
-        this.pitemperature_points.push([r.data.singlePoint.timestamp, r.data.singlePoint.pitemp])
-        this.temperatureDTH_points.push([r.data.singlePoint.timestamp, r.data.singlePoint.tempDTH])
-        this.humidityDTH_points.push([r.data.singlePoint.timestamp, r.data.singlePoint.humDTH])
+        let localDateOffset = new Date().getTimezoneOffset() * 60 * 1000
+        this.light_points.push([r.data.singlePoint.timestamp - localDateOffset, r.data.singlePoint.lum])
+        this.pitemperature_points.push([r.data.singlePoint.timestamp - localDateOffset, r.data.singlePoint.pitemp])
+        this.temperatureDTH_points.push([r.data.singlePoint.timestamp - localDateOffset, r.data.singlePoint.tempDTH])
+        this.humidityDTH_points.push([r.data.singlePoint.timestamp - localDateOffset, r.data.singlePoint.humDTH])
         if (this.light_points.length > 1000) {
           this.light_points.shift()
         }
