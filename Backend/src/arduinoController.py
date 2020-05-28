@@ -60,7 +60,7 @@ class ArduinoController:
         else:
           time.sleep(0.01)
         newTime = time.time()
-      time.sleep(20)
+      time.sleep(300)
 
   def interpretMessage(self, bytesArray):
     mystring = ''

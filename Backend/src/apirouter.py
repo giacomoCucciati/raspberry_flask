@@ -86,7 +86,9 @@ def addPoints():
   print(params)
 
   s = params['timestamp'] / 1000
-  stringtime = datetime.datetime.fromtimestamp(s).strftime('%Y-%m-%dT%H:%M:%SZ')
+  stringtime = datetime.datetime.utcfromtimestamp(s).strftime('%Y-%m-%dT%H:%M:%SZ')
+  # In case we want to use time at this moment and not from arduino controller:
+  # stringtime = datetime.datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ')
   print(stringtime)
   influxPoint = {}
   influxPoint["measurement"] = "rasp_measurements"
